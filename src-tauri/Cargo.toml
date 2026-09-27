@@ -1,0 +1,45 @@
+[package]
+name = "classbroadcast"
+version = "1.0.0"
+description = "Class Broadcast - 多班级广播喊话系统"
+authors = ["新启年工作室"]
+edition = "2021"
+rust-version = "1.77"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-autostart = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+# Windows 原生 Schannel TLS（native-tls），避免 rustls/ring 引入 C 编译依赖
+reqwest = { version = "0.12", default-features = false, features = ["json", "blocking", "native-tls"] }
+hmac = "0.12"
+sha2 = "0.10"
+hex = "0.4"
+uuid = { version = "1", features = ["v4"] }
+socket2 = "0.5"
+jpeg-encoder = "0.6"
+base64 = "0.22"
+windows-sys = { version = "0.59", features = [
+  "Win32_Graphics_Gdi",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_UI_HiDpi",
+  "Win32_UI_Input_KeyboardAndMouse",
+] }
+
+[features]
+# 嵌入 dist 前端（等价于 tauri build 的行为），单文件运行不依赖 dev server
+custom-protocol = ["tauri/custom-protocol"]
+# 教师端构建：固定角色为教师，隐藏角色切换
+teacher-ui = []
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true
